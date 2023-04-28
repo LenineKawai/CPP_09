@@ -6,13 +6,13 @@
 /*   By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 10:39:41 by mgolinva          #+#    #+#             */
-/*   Updated: 2023/04/28 16:21:14 by mgolinva         ###   ########.fr       */
+/*   Updated: 2023/04/28 16:42:54 by mgolinva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
 #define DATE_CHARSET    "0123456789-"
-#define VALUE_CHARSET   "0123456789.,"
+#define VALUE_CHARSET   "0123456789., "
 
 bool    isCharset(char c, std::string charset)
 {
@@ -88,16 +88,16 @@ t_date buildDate(std::string dateStr)
     date.month  = std::atoi(dateSplit[1].c_str());
     date.day    = std::atoi(dateSplit[2].c_str());
 
-    if (date.month > 12)
+    if (date.month < 12)
     {
-        if (date.month % 2 == 0 && date.month != 8 && date.day > 31)
-            date.validity = false;
-        else if (date.month % 2 == 0 && date.month != 8 && date.day > 31)
-            date.validity = false ;
         if (date.month == 2 && date.year % 4 == 0 && date.day > 29)
             date.validity = false ;
         else if (date.month == 2 && date.year % 4 != 0 && date.day > 28)
             date.validity = false;
+        else if (date.month % 2 == 0 && date.month != 8 && date.day > 31)
+            date.validity = false;
+        else if (date.month % 2 == 0 && date.month != 8 && date.day > 31)
+            date.validity = false ;
     }
     else
         date.validity = false;
@@ -159,6 +159,12 @@ bool   checkDate(std::map< std::string, double > &map, std::string date, int lin
     t_date  dbStart     = buildDate(map.begin()->first);
     t_date  dbEnd       = buildDate(map.rbegin()->first);
     
+    if (dateStruct.validity == false)
+    {
+        std::cerr << "Invalid date : line " << lineCT << " => ' " << date << " '" << std::endl;
+        return (false);
+    }
+
     while (i < size)
     {
         if (isCharset(date[i], DATE_CHARSET) == false)
