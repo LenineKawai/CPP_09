@@ -6,12 +6,12 @@
 /*   By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 10:39:41 by mgolinva          #+#    #+#             */
-/*   Updated: 2023/04/28 16:42:54 by mgolinva         ###   ########.fr       */
+/*   Updated: 2023/05/02 16:16:43 by mgolinva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
-#define DATE_CHARSET    "0123456789-"
+#define DATE_CHARSET    "0123456789"
 #define VALUE_CHARSET   "0123456789., "
 
 bool    isCharset(char c, std::string charset)
@@ -87,8 +87,15 @@ t_date buildDate(std::string dateStr)
     date.year   = std::atoi(dateSplit[0].c_str());
     date.month  = std::atoi(dateSplit[1].c_str());
     date.day    = std::atoi(dateSplit[2].c_str());
+    if (errno == ERANGE)
+    {
+        date.validity = false;
+        errno = 0;
+        delete[] dateSplit;
+        return (date);
+    }
 
-    if (date.month < 12)
+    if (date.month <= 12)
     {
         if (date.month == 2 && date.year % 4 == 0 && date.day > 29)
             date.validity = false ;
@@ -96,7 +103,7 @@ t_date buildDate(std::string dateStr)
             date.validity = false;
         else if (date.month % 2 == 0 && date.month != 8 && date.day > 31)
             date.validity = false;
-        else if (date.month % 2 == 0 && date.month != 8 && date.day > 31)
+        else if (date.month % 2 != 0 && date.day > 30)
             date.validity = false ;
     }
     else
@@ -125,12 +132,12 @@ bool    isFirstDateGreater(t_date first, t_date second)
             return (false);
     }
     else
-        return (false); 
+        return (true); 
 }
 
 bool    isFirstDateSmaller(t_date first, t_date second)
 {
-    if (first.year < second.year)
+    if (first.year > second.year)
         return (false);
     else if (first.year == second.year)
     {
@@ -147,7 +154,7 @@ bool    isFirstDateSmaller(t_date first, t_date second)
             return (false);
     }
     else
-        return (false); 
+        return (true); 
 }
 
 
@@ -161,27 +168,25 @@ bool   checkDate(std::map< std::string, double > &map, std::string date, int lin
     
     if (dateStruct.validity == false)
     {
-        std::cerr << "Invalid date : line " << lineCT << " => ' " << date << " '" << std::endl;
+        std::cerr << "Invalid date :" << RED << BOLD << " line " << lineCT << END <<" => ' " << date << " '" << std::endl;
         return (false);
     }
 
     while (i < size)
     {
-        if (isCharset(date[i], DATE_CHARSET) == false)
+        if (date[i] == '-')
+            i ++;
+        if (i < size && isCharset(date[i], DATE_CHARSET) == false)
         {
-            std::cerr << "Invalid date format : line " << lineCT << " => ' " << date << " '" << std::endl;
+            std::cerr << "Invalid date format :" << RED << BOLD << " line " << lineCT << END " => ' " << date << " '" << std::endl;
             return (false);
         }
         i ++;
     }
-
-    std::string *dateSplit = cppsplit(date, '-');
-    if (dateSplit == NULL)
-        return (false);
     
     if (isFirstDateSmaller(dateStruct, dbStart) == true || isFirstDateGreater(dateStruct, dbEnd) == true)
     {
-        std::cerr << "This date is outside of our database range : line " << lineCT << " => ' " << date << " '" << std::endl;
+        std::cerr << "This date is outside of our database range : line " << RED << BOLD << " line " << lineCT << END " => ' " << date << " '" << std::endl;
         return (false);
     }
     return (true);
@@ -198,11 +203,11 @@ bool    checkValue(std::string val, int lineCT)
     {
         if (size > 1 && i == 0 && (val[i] == '-' || val[i] == '+'))
             i ++;
-        if (val[i] == '.' || val[i] == ',')
+        if (i < size && (val[i] == '.' || val[i] == ','))
             pointCT ++;
-        if (pointCT > 1 || isCharset(val[i], VALUE_CHARSET) == false)
+        if (i < size && (pointCT > 1 || isCharset(val[i], VALUE_CHARSET) == false))
         {
-            std::cerr << "Invalid value : line " << lineCT << " => ' " << val << " '" << std::endl;
+            std::cerr << "Invalid value :" << RED << BOLD << " line " << lineCT << END " => ' " << val << " '" << std::endl;
             return (false);
         }
         i ++;
@@ -211,12 +216,12 @@ bool    checkValue(std::string val, int lineCT)
 
     if (numVal <= 0)
     {
-            std::cerr << "Invalid negativ or null value : line " << lineCT << " => ' " << numVal << " '" << std::endl;
+            std::cerr << "Invalid negativ or null value :" << RED << BOLD << " line " << lineCT << END " => ' " << numVal << " '" << std::endl;
             return (false);
     }
     if (numVal >= 1000)
     {
-            std::cerr << "Value is too high : line " << lineCT << " => ' " << numVal << " '" << std::endl;
+            std::cerr << "Value is too high :" << RED << BOLD << " line " << lineCT << END " => ' " << numVal << " '" << std::endl;
             return (false);
     }
     return (true);
@@ -247,7 +252,7 @@ bool    checkInputLine(std::map< std::string, double > &map, std::string &line, 
 
         if (line[i] != '|')
         {
-            std::cerr << "Invalid format : line " << lineCT << " => " << line << " // user yyyy-mm-dd | val format." << std::endl;
+            std::cerr << "Invalid format :" << RED << BOLD << " line " << lineCT << END " => " << line << " // user yyyy-mm-dd | val format." << std::endl;
             return (false);
         }
         
@@ -258,7 +263,7 @@ bool    checkInputLine(std::map< std::string, double > &map, std::string &line, 
         
         if (i >= size)
         {
-            std::cerr << "Invalid format : line " << lineCT << " => " << line << " // user yyyy-mm-dd | val format." << std::endl;
+            std::cerr << "Invalid format :" << RED << BOLD << " line " << lineCT << END " => " << line << " // user yyyy-mm-dd | val format." << std::endl;
             return (false);
         }
 
@@ -307,7 +312,6 @@ void    writeOutput(std::ifstream &infile, std::map< std::string, double > &map)
     while (infile.eof() == false)
     {
         std::getline(infile, line);
-        // std::cout << "'"<< line << "'" << std::endl;
         if (checkInputLine(map, line, &tmp_key, &tmp_val) == true)
         {
             if (map.find(tmp_key) != map.end())

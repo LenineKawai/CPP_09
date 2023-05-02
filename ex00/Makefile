@@ -6,7 +6,7 @@
 #    By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/25 10:15:07 by mgolinva          #+#    #+#              #
-#    Updated: 2023/04/26 10:05:07 by mgolinva         ###   ########.fr        #
+#    Updated: 2023/05/02 10:27:32 by mgolinva         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ INCL	=   BitcoinExchange.hpp
 
 CC		= c++
 
-FLAGS	= -Wall -Wextra -Werror -std=c++98 -pedantic #-fsanitize=address -g3
+FLAGS	= -Wall -Wextra -Werror -std=c++98 -pedantic -fsanitize=address -g3
 
 RM		= rm -f
 
