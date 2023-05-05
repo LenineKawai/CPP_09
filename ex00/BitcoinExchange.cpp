@@ -6,7 +6,7 @@
 /*   By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 10:39:41 by mgolinva          #+#    #+#             */
-/*   Updated: 2023/05/02 16:16:43 by mgolinva         ###   ########.fr       */
+/*   Updated: 2023/05/03 09:39:14 by mgolinva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ std::string *cppsplit(std::string str, char sep)
             }
             i ++;
         }
-        // IF MORE THAN 3 BLOCKS RETURN NULL FOR INVALID DATE FORMAT
         if (wordCT != 3)
         {
             delete[] strArray;
