@@ -6,7 +6,7 @@
 /*   By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 16:19:11 by mgolinva          #+#    #+#             */
-/*   Updated: 2023/05/05 17:49:51 by mgolinva         ###   ########.fr       */
+/*   Updated: 2023/05/10 16:30:53 by mgolinva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,15 @@ int main(int ac, char **av)
     try
     {
         PmergeMe exonul(input);
+        std::cout << "Before : ";
+        exonul.printInput();
         exonul.sortVec();
-        exonul.printVec();
+        exonul.sortLst();
+        std::cout << "After : ";
+        exonul.printLst();
+        // exonul.printVec();
+        exonul.getTimeVec();
+        exonul.getTimeLst();
     }
     catch(const PmergeMe::badInput& e)
     {

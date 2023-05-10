@@ -6,7 +6,7 @@
 /*   By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 09:18:32 by mgolinva          #+#    #+#             */
-/*   Updated: 2023/05/05 17:50:24 by mgolinva         ###   ########.fr       */
+/*   Updated: 2023/05/10 16:44:24 by mgolinva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <list>
 #include <cerrno>
 #include <cstdlib>
+#include <sys/time.h>
+#include <iomanip>
 
 # define RESET   "\033[0;0m"
 # define ERASE   "\033[2K\r"
@@ -39,7 +41,7 @@
 # define CHARSET "0123456789 "
 # define VECTOR 0
 # define LIST 1
-# define MERGE_LIMIT 2
+# define MERGE_LIMIT 31
 
 class PmergeMe
 {
@@ -51,32 +53,36 @@ private:
     std::list < unsigned int >      _list;
     double                          _vecTime;
     double                          _lstTime;
-    /* data */
+
+    std::vector<unsigned int>   mergesortVec(std::vector<unsigned int> vec1, std::vector<unsigned int> vec2);
+    std::vector<unsigned int>   mergeVec(std::vector<unsigned int> &vec);
+    void                        insertVec(std::vector<unsigned int> &vec);
+    std::list<unsigned int>     mergesortLst(std::list<unsigned int> lst1, std::list<unsigned int> lst2);
+    std::list<unsigned int>     mergeLst(std::list<unsigned int> &lst);
+    void                        insertLst(std::list<unsigned int> &lst);
+
 public:
     PmergeMe(const std::string &input);
     PmergeMe(const PmergeMe &cp);
     ~PmergeMe();
 
     PmergeMe &operator=(const PmergeMe &cp);
-    // std::string &operator<<(PmergeMe &cp);
 
     bool    checkInput();
-    bool    fillContainers();
+    bool    fillVec();
+    bool    fillLst();
     void    sortVec();
-    // void    sortLst();
-    std::vector<unsigned int>    mergeVec(std::vector<unsigned int> &vec);
-    void    insertVec(std::vector<unsigned int> &vec);
-    void    printLst();
+    void    sortLst();
     void    printVec() const;
+    void    printLst();
     void    printInput() const;
+    void    getTimeVec() const;
+    void    getTimeLst() const;
 
 
     class badInput : public std::exception
     {
-        // private :
-        //     std::string _arg;
         public :
-            // badInput(std::string arg) {_arg = arg;};
             const std::string msg() const throw();
     };
 };
