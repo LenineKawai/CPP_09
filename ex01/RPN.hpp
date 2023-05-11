@@ -6,7 +6,7 @@
 /*   By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 10:29:57 by mgolinva          #+#    #+#             */
-/*   Updated: 2023/05/02 17:50:22 by mgolinva         ###   ########.fr       */
+/*   Updated: 2023/05/11 16:16:24 by mgolinva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ class RPN
 {
     private:
         std::string         _input;
-        std::stack< int >   _stack;
+        std::stack< float >   _stack;
         
         RPN();
         

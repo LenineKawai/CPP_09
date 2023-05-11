@@ -6,7 +6,7 @@
 /*   By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 09:24:55 by mgolinva          #+#    #+#             */
-/*   Updated: 2023/05/10 17:08:40 by mgolinva         ###   ########.fr       */
+/*   Updated: 2023/05/11 16:21:44 by mgolinva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,14 @@ std::string *cppsplit(std::string str, char sep)
     catch (std::bad_alloc &e)
     {
         std::cerr << "Error: " << e.what() << std::endl;
-        return (0);
+        delete [] strArray;
+        exit (1);
     }
     return (0);
 }
 
 PmergeMe::PmergeMe(const std::string &input)
 {
-    // std::cout << BOLD << input << END << std::endl;
     _input = input;
     if (checkInput() == false)
         throw(PmergeMe::badInput());
@@ -207,8 +207,6 @@ void    PmergeMe::insertVec(std::vector<unsigned int> &vec)
     size_t          j = 0;
     size_t          i = 0;
 
-    // for (std::vector< unsigned int >::iterator it = vec.begin(); it != vec.end(); it++)
-    //     std::cout << RED << *it << END <<  " ";
     if (size <= 1)
         return ;
     while( i < size)
@@ -223,9 +221,6 @@ void    PmergeMe::insertVec(std::vector<unsigned int> &vec)
         }
         i ++;
     }
-    // for (std::vector< unsigned int >::iterator it = vec.begin(); it != vec.end(); it++)
-    //     std::cout << GREEN << *it << END <<  " ";
-    // std::cout << std::endl;
 }
 
 void    PmergeMe::sortVec()
@@ -321,8 +316,6 @@ void    PmergeMe::insertLst(std::list<unsigned int> &lst)
     if (lst.size() <= 1)
         return;
     ++i;
-    // for (std::list< unsigned int >::iterator it = lst.begin(); it != lst.end(); it++)
-    //     std::cout << RED << *it << END <<  " ";
     while (i != end)
     {
         j = i;
@@ -340,9 +333,6 @@ void    PmergeMe::insertLst(std::list<unsigned int> &lst)
         *next = tmp;
         ++i;
     }
-    // for (std::list< unsigned int >::iterator it = lst.begin(); it != lst.end(); it++)
-    //     std::cout << GREEN << *it << END <<  " ";
-    // std::cout << std::endl;
 }
 
 void    PmergeMe::sortLst()
@@ -405,11 +395,11 @@ void    PmergeMe::printLst()
 void    PmergeMe::getTimeVec() const
 {
    std::cout << BOLD << "time to process a range of " << _vector.size() << " elements with std::vector : "
-   << RED << _vecTime << " s" <<END << std::endl;
+   << RED << std::fixed << _vecTime << " s" <<END << std::endl;
 }
 void    PmergeMe::getTimeLst() const
 {
     std::cout << BOLD << "time to process a range of " << _list.size() << " elements with std::list : "
-    << RED << _lstTime << " s" END << std::endl;
+    << RED << std::fixed << _lstTime << " s" END << std::endl;
 }
 

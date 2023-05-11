@@ -6,13 +6,13 @@
 /*   By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 10:39:41 by mgolinva          #+#    #+#             */
-/*   Updated: 2023/05/03 09:39:14 by mgolinva         ###   ########.fr       */
+/*   Updated: 2023/05/11 16:21:45 by mgolinva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
 #define DATE_CHARSET    "0123456789"
-#define VALUE_CHARSET   "0123456789., "
+#define VALUE_CHARSET   "0123456789.,"
 
 bool    isCharset(char c, std::string charset)
 {
@@ -37,8 +37,13 @@ std::string *cppsplit(std::string str, char sep)
             i ++;
         } 
         while (str[i] && str[i] == sep)
+        {
+            wordCT ++;
             i ++;
+        }
     }
+    if (wordCT != 3)
+        return (NULL);
     try
     {
         strArray = new std::string[wordCT + 1];
@@ -56,11 +61,6 @@ std::string *cppsplit(std::string str, char sep)
                 j ++;
             }
             i ++;
-        }
-        if (wordCT != 3)
-        {
-            delete[] strArray;
-            return (0);
         }
         return (strArray);
     }
@@ -83,30 +83,37 @@ t_date buildDate(std::string dateStr)
         date.validity = false;
         return (date);
     }
-    date.year   = std::atoi(dateSplit[0].c_str());
-    date.month  = std::atoi(dateSplit[1].c_str());
-    date.day    = std::atoi(dateSplit[2].c_str());
-    if (errno == ERANGE)
-    {
+    if (dateSplit[1].size() != 2 || dateSplit[2].size() != 2)
         date.validity = false;
-        errno = 0;
-        delete[] dateSplit;
-        return (date);
-    }
-
-    if (date.month <= 12)
-    {
-        if (date.month == 2 && date.year % 4 == 0 && date.day > 29)
-            date.validity = false ;
-        else if (date.month == 2 && date.year % 4 != 0 && date.day > 28)
-            date.validity = false;
-        else if (date.month % 2 == 0 && date.month != 8 && date.day > 31)
-            date.validity = false;
-        else if (date.month % 2 != 0 && date.day > 30)
-            date.validity = false ;
-    }
     else
-        date.validity = false;
+    {
+        date.year   = std::atoi(dateSplit[0].c_str());
+        date.month  = std::atoi(dateSplit[1].c_str());
+        date.day    = std::atoi(dateSplit[2].c_str());
+        if (errno == ERANGE)
+        {
+            date.validity = false;
+            errno = 0;
+            delete[] dateSplit;
+            return (date);
+        }
+
+        if (date.month == 0 || date.day == 0)
+            date.validity = false;
+        else if (date.month <= 12)
+        {
+            if (date.month == 2 && date.year % 4 == 0 && date.day > 29)
+                date.validity = false ;
+            else if (date.month == 2 && date.year % 4 != 0 && date.day > 28)
+                date.validity = false;
+            else if (date.month % 2 != 0 && date.month != 8 && date.day > 31)
+                date.validity = false;
+            else if (date.month % 2 == 0 && date.day > 30)
+                date.validity = false ;
+        }
+        else
+            date.validity = false;
+    }
     delete[] dateSplit;
     
     return (date);
@@ -167,7 +174,7 @@ bool   checkDate(std::map< std::string, double > &map, std::string date, int lin
     
     if (dateStruct.validity == false)
     {
-        std::cerr << "Invalid date :" << RED << BOLD << " line " << lineCT << END <<" => ' " << date << " '" << std::endl;
+        std::cerr << "Invalid date :" << RED << BOLD << " line " << lineCT << END <<" => ' " << date << " ' only yyyy-mm-dd format is accepted" << std::endl;
         return (false);
     }
 
@@ -191,25 +198,34 @@ bool   checkDate(std::map< std::string, double > &map, std::string date, int lin
     return (true);
 }
 
-bool    checkValue(std::string val, int lineCT)
+bool    checkValue(std::string &val, int lineCT)
 {
     size_t  i           = 0;
     size_t  size        = val.size();
     int     pointCT = 0;
     double  numVal;
 
-    while (i < size)
+    while (i < size && val[i] == ' ')
+        i ++;
+    if (i < size && size > 1 && i == 0 && (val[i] == '-' || val[i] == '+'))
+        i ++;
+    while (i < size && pointCT <= 1 && isCharset(val[i], VALUE_CHARSET))
     {
-        if (size > 1 && i == 0 && (val[i] == '-' || val[i] == '+'))
-            i ++;
-        if (i < size && (val[i] == '.' || val[i] == ','))
-            pointCT ++;
-        if (i < size && (pointCT > 1 || isCharset(val[i], VALUE_CHARSET) == false))
+        if (val[i] == '.' || val[i] == ',')
         {
-            std::cerr << "Invalid value :" << RED << BOLD << " line " << lineCT << END " => ' " << val << " '" << std::endl;
-            return (false);
+            pointCT ++;
+            if (val[i] == ',')
+                val[i] = '.';
         }
         i ++;
+    }
+    while (i < size && val[i] == ' ')
+        i ++;
+    if (i != size || pointCT > 1)
+    {
+        std::cout << "i : " << i << " size : " << size << " " <<  " FEUR FEUR FEUR "<< pointCT << std::endl;
+        std::cerr << "Invalid value :" << RED << BOLD << " line " << lineCT << END " => ' " << val << " '" << std::endl;
+        return (false);
     }
     numVal = std::atof(val.c_str());
 
@@ -218,9 +234,9 @@ bool    checkValue(std::string val, int lineCT)
             std::cerr << "Invalid negativ or null value :" << RED << BOLD << " line " << lineCT << END " => ' " << numVal << " '" << std::endl;
             return (false);
     }
-    if (numVal >= 1000)
+    if (numVal > 1000)
     {
-            std::cerr << "Value is too high :" << RED << BOLD << " line " << lineCT << END " => ' " << numVal << " '" << std::endl;
+            std::cerr << "Value is too high :" << RED << BOLD << " line " << lineCT << END " => ' " << std::fixed << numVal << " '" << std::endl;
             return (false);
     }
     return (true);
@@ -308,7 +324,7 @@ void    writeOutput(std::ifstream &infile, std::map< std::string, double > &map)
     std::string tmp_val;
     std::string tmp_key;
     
-    while (infile.eof() == false)
+    while (infile.eof() == false && infile.fail() == false)
     {
         std::getline(infile, line);
         if (checkInputLine(map, line, &tmp_key, &tmp_val) == true)

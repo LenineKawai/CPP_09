@@ -6,7 +6,7 @@
 #    By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/25 10:15:07 by mgolinva          #+#    #+#              #
-#    Updated: 2023/05/02 17:17:13 by mgolinva         ###   ########.fr        #
+#    Updated: 2023/05/11 16:20:12 by mgolinva         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ RM		= rm -f
 
 OBJS	= $(SRCS:.cpp=.o)
 
-NAME	= rpn
+NAME	= RPN
 
 %.o: %.cpp $(INCL) Makefile
 	$(CC) -c $< -o $@ $(FLAGS)

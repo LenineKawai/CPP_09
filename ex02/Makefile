@@ -6,7 +6,7 @@
 #    By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/25 10:15:07 by mgolinva          #+#    #+#              #
-#    Updated: 2023/05/10 15:53:23 by mgolinva         ###   ########.fr        #
+#    Updated: 2023/05/11 15:03:35 by mgolinva         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ INCL	=   PmergeMe.hpp
 
 CC		= c++
 
-FLAGS	= -Wall -Wextra -Werror -std=c++98 -pedantic -fsanitize=address -g3
+FLAGS	= -Wall -Wextra -Werror -std=c++98 #-pedantic -fsanitize=address -g3
 
 RM		= rm -f
 

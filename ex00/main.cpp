@@ -6,7 +6,7 @@
 /*   By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 10:20:28 by mgolinva          #+#    #+#             */
-/*   Updated: 2023/04/28 15:11:38 by mgolinva         ###   ########.fr       */
+/*   Updated: 2023/05/11 15:47:59 by mgolinva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,10 @@ int main(int ac, char **av)
 
     std::ifstream infile(av[1]);
 
-    if (infile.good() && db.good())
+    if (infile.good() && db.good() && infile)
     {
         fillMap(db, course);
         writeOutput(infile, course);
-        // std::map< std::string, double >::iterator it = course.begin();
-        // std::map< std::string, double >::iterator end = course.end();
-        // std::cout << "course size : " << course.size() <<std::endl;
-        // for (; it != end; it ++)
-        // {
-        //     std::cout << "key : " << it->first << " | val : " << it->second << std::endl;
-        // }
-        //parse input file
-        
-        //print results
-
     }
 
     else

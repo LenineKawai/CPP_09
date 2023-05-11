@@ -6,7 +6,7 @@
 /*   By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 10:29:54 by mgolinva          #+#    #+#             */
-/*   Updated: 2023/05/02 17:54:07 by mgolinva         ###   ########.fr       */
+/*   Updated: 2023/05/11 16:19:28 by mgolinva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,17 @@ bool    isCharset(char c, std::string charset)
 
 RPN::RPN()
 {
-    // std::cout << GREEN << "Default constructor" << END << std::endl;
+    ;
 }
 
 RPN::RPN(const std::string &input)
 {
-    // std::cout << BLUE << "constructor" << END <<  std::endl;
     checkInput(input);
     _input = input;
 }
 
 RPN::RPN(const RPN &rpn)
 {
-    // std::cout << YELLOW << "copy constructor" << END << std::endl;
     *this = rpn;
 }
 
@@ -48,7 +46,7 @@ RPN &RPN::operator=(const RPN &rpn)
 
 RPN::~RPN()
 {
-    // std::cout << RED << "DESTRUCTED" << END << std::endl;
+    ;
 }
 
 /******** MEMBER FUNCTIONS ********/
@@ -64,6 +62,8 @@ void    RPN::checkInput(const std::string &input)
     {
         while (i < size && input[i] == ' ')
             i ++;
+        if (i == size)
+            throw(badInput());
         if ((i < size) 
         && (isCharset(input[i], NB_CHARSET) == false && isCharset(input[i], OPER_CHARSET) == false))
             throw (badInput()); 
@@ -71,12 +71,12 @@ void    RPN::checkInput(const std::string &input)
     }
 }
 
-int     oper(char c, int first, int second)
+float     oper(char c, float first, float second)
 {
     switch (c)
     {
         case '-':
-            return (first - second);
+            return (second - first);
         case '+':
             return (first + second);
         case '*':
@@ -92,7 +92,7 @@ void    RPN::compute()
 {
     size_t i = 0;
     size_t size = _input.size();
-    int    tmp;
+    float  tmp;
     
     while (i < size)
     {
@@ -104,8 +104,14 @@ void    RPN::compute()
         {
             if (_stack.size() < 2)
             {
-                std::cerr << BOLD << RED << "incomputable input : "
+                std::cout << BOLD << RED << "incomputable input : "
                 "there is less than 2 numbers in the stack when an operator is called" << END << std::endl; 
+                return ;
+            }
+            else if (_input[i] == '/' && _stack.top() == 0)
+            {
+                std::cout << BOLD << RED << "incomputable input : "
+                << "there is a division by zero occurence that leads to undefined behaviours" << END << std::endl;
                 return ;
             }
             else
@@ -120,7 +126,7 @@ void    RPN::compute()
         i ++;
     }
     if (_stack.size() > 1)
-        std::cerr << BOLD << RED << "computation failed, there seems to be to few operands" << END << std::endl;
+        std::cout << BOLD << RED << "computation failed, there seems to be too few operators" << END << std::endl;
     else
         std::cout << BOLD << "computation result for '" << YELLOW << _input << WHITE << "' :" << std::endl
         << GREEN << _stack.top() << END << std::endl;

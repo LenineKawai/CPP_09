@@ -6,7 +6,7 @@
 /*   By: mgolinva <mgolinva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 10:39:30 by mgolinva          #+#    #+#             */
-/*   Updated: 2023/04/28 16:19:52 by mgolinva         ###   ########.fr       */
+/*   Updated: 2023/05/11 10:54:44 by mgolinva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <iomanip>
 
 void    fillMap(std::ifstream &db, std::map< std::string, double > &map);
 void    writeOutput(std::ifstream &infile, std::map< std::string, double > &map);
